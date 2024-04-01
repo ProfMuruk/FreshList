@@ -28,6 +28,7 @@ export default function HomeScreen({navigation}){
         {id:'7', nome:'Lista atacadão', dia:'23/02/2024', tipo:'supermercado'},
         {id:'8', nome:'Lista atacadão', dia:'23/02/2024', tipo:'supermercado'},
     ]
+    
     const ListaComprasItem = ({ item }) => (
         <TouchableOpacity onPress={() => navigation.navigate('ItensLista', {listaItens: item.itens})}>
             <Card containerStyle={styles.estiloCard}>
