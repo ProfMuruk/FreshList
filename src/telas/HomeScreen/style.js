@@ -3,6 +3,7 @@ import { StyleSheet } from "react-native";
 const styles = StyleSheet.create({
     consteudoPrincipal:{
         backgroundColor: '#C1D9A9',
+        height:"100%"
     },
     imagem:{
         width:'auto',
@@ -20,7 +21,7 @@ const styles = StyleSheet.create({
         textAlign: 'justify',
         color: '#FFF',
         fontSize:18,
-        fontWeight:'bold',
+        fontWeight: 'bold',
         paddingTop:15,
         paddingBottom: 15,
     },
