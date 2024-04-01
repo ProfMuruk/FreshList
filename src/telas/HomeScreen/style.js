@@ -2,9 +2,9 @@ import { StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
 
-    consteudoPrincipal:{
+    conteudoPrincipal:{
     backgroundColor: '#C1D9A9',
-height:"100%"
+    height:"100%"
     },
     imagem:{
         width:'auto',
@@ -13,7 +13,6 @@ height:"100%"
     botaoCriarTarefa:{
         backgroundColor: '#30734D',
         flexDirection: 'row',
-
         alignItems:'center',
         justifyContent:'center',
         margin:15
@@ -45,7 +44,6 @@ height:"100%"
     },
 
     textoBotaoCriarTarefa:{
-        fontFamily:"Poppins_500Medium",
         color:'#FFF',
         fontSize: 18,
         paddingTop: 15,
