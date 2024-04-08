@@ -1,12 +1,30 @@
-import React from "react"
+import React, { useCallback, useState } from "react"
 import { View, Text, FlatList } from "react-native"
 import { Card } from "react-native-elements";
+import {useFocusEffect} from '@react-navigation/native'
 
 import styles from "./style";
+import { getItem } from "../../dataBase/SQLiteManager";
 
 export default function ItensLista({navigation, route}){
+    const [itensDaLista, setItensDaLista] = useState([]);
 
-    const itensDaLista = route.params.listaItens;
+    const listaId = route.params.listaId
+
+    const carregarItensDaLista = async () =>{
+        try{
+            const itens = await getItem(listaId)
+            setItensDaLista(itens)
+        }catch(error){
+            console.log("Erro ao carregar os itens: ", error)
+        }
+    }
+
+    useFocusEffect(
+        useCallback(() =>{
+            carregarItensDaLista();
+        }, [])
+    );
 
     function valorTotal(){
         let total = 0;
@@ -19,7 +37,7 @@ export default function ItensLista({navigation, route}){
     const ItensL =({item}) =>(
         <Card>
             <Card.Title>Produto: 
-                <Text>{item.produto}</Text>
+                <Text>{item.nome}</Text>
             </Card.Title>
             <Text>{item.preco}</Text>
             <Text>{item.quantidade}</Text>
@@ -30,7 +48,7 @@ export default function ItensLista({navigation, route}){
         <View style={styles.viewPrincipal}>
         <FlatList
             data={itensDaLista}
-            keyExtractor={(item) => item.produto}
+            keyExtractor={(item) => item.id}
             renderItem={({item})=> <ItensL item={item} />} 
             ListEmptyComponent={<Text>Nenhum item na lista</Text>}
         />
