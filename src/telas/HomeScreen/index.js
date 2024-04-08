@@ -1,36 +1,50 @@
-import React from "react";
-import { View, Image, TouchableOpacity, Text, FlatList} from "react-native";
+import React, { useCallback, useState } from "react";
+import { View, Image, TouchableOpacity, Text, FlatList, ActivityIndicator} from "react-native";
+import { useFocusEffect } from '@react-navigation/native'
 import Texto from '../../componentes/Texto'
 import styles from "./style";
 import { Card } from "react-native-elements";
+import { getItem, getLista } from "../../dataBase/SQLiteManager";
 
 export default function HomeScreen({navigation}){
-    const listasCompras = [
-        {id:'1', nome:'Lista atacadão', dia:'23/02/2024', tipo:'supermercado',
-        itens:[{produto:'maça',preco: 12.99, quantidade: 5},
-                {produto:'leite',preco: 12.99, quantidade: 5},
-                {produto:'bolacha',preco: 12.99, quantidade: 5},
-                {produto:'pinga',preco: 12.99, quantidade: 5},
-                {produto:'bucha',preco: 12.99, quantidade: 5},
-                {produto:'refrigerante',preco: 12.99, quantidade: 5},
-                {produto:'shampoo',preco: 12.99, quantidade: 5},
-                {produto:'sabonete',preco: 1.99, quantidade: 3},
-                {produto:'pasta de dente',preco: 6.89, quantidade: 2},
-                {produto:'refrigerante zero',preco: 5.00, quantidade: 4},
-                {produto:'xuxu',preco: 9.00, quantidade: 4}
-        ]
-    },
-        {id:'2', nome:'Lista Ferragens', dia:'03/02/2024', tipo:'construção'},
-        {id:'3', nome:'Lista escolar', dia:'01/01/2024', tipo:'papelaria'},
-        {id:'4', nome:'Lista frutaria', dia:'23/12/2023', tipo:'supermercado'},
-        {id:'5', nome:'Lista compras', dia:'23/02/2024', tipo:'supermercado'},
-        {id:'6', nome:'Lista atacadão', dia:'23/02/2024', tipo:'supermercado'},
-        {id:'7', nome:'Lista atacadão', dia:'23/02/2024', tipo:'supermercado'},
-        {id:'8', nome:'Lista atacadão', dia:'23/02/2024', tipo:'supermercado'},
-    ]
+    const [listasCompras, setListasCompras] = useState([])
+    const [carregando, setCarregando] = useState(true)
+    const [itensCarregados, setItensCasrregados] = useState(false)
+
+    const carregarListasCompras = async () =>{
+        try{
+            setCarregando(true)
+            let listas = await getLista();
+            if(!Array.isArray(listas)){
+                listas = [];
+            }
+            for(let lista of listas){
+                let itens = await getItem();
+                if(!Array.isArray(itens)){
+                    itens = [];
+                }
+                lista.itens = itens;
+            }
+            setListasCompras(listas);
+            setItensCasrregados(true);
+
+        }catch(error){
+            console.log('Erro ao carregar listas: ', error)
+        }finally{
+            setCarregando(false);
+        }
+    }
+
+    useFocusEffect(
+        useCallback( () =>{
+            setTimeout(() => {
+                carregarListasCompras();
+            }, 2000);
+        }, [])
+    );
     
     const ListaComprasItem = ({ item }) => (
-        <TouchableOpacity onPress={() => navigation.navigate('ItensLista', {listaItens: item.itens})}>
+        <TouchableOpacity onPress={() => navigation.navigate('ItensLista', {listaId: item.id})}>
             <Card containerStyle={styles.estiloCard}>
             <Card.Title style={styles.estiloCardTitulo}>{item.nome}</Card.Title>
             <Card.Divider />
@@ -46,15 +60,18 @@ export default function HomeScreen({navigation}){
                 <TouchableOpacity style={styles.botaoCriarTarefa}>
                     <Text style={styles.textoBotao}>Criar nova lista</Text>
                 </TouchableOpacity>
-
-                <FlatList
-                    style={styles.estiloFlatList}
-                    data={listasCompras}
-                    showsVerticalScrollIndicator={true} keyExtractor={(item) => item.id}
-                    renderItem={({ item }) => <ListaComprasItem item={item} />}
-                    ItemSeparatorComponent={() => <View style={styles.separador} />} // Adicione um separador
-                    ListEmptyComponent={<Texto style={styles.listaVazia}>Nenhuma lista encontrada</Texto>} // Mensagem quando a lista estiver vazia
-                />
+                {carregando ? (
+                    <ActivityIndicator size="large" color="0000FF" />
+                ) : (
+                    <FlatList
+                        style={styles.estiloFlatList}
+                        data={listasCompras}
+                        showsVerticalScrollIndicator={true} keyExtractor={(item) => item.id}
+                        renderItem={({ item }) => <ListaComprasItem item={item} />}
+                        ItemSeparatorComponent={() => <View style={styles.separador} />} // Adicione um separador
+                        ListEmptyComponent={<Texto style={styles.listaVazia}>Nenhuma lista encontrada</Texto>} // Mensagem quando a lista estiver vazia
+                    />
+                )}
             
         </View>
     )
