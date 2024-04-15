@@ -5,6 +5,7 @@ import Texto from '../../componentes/Texto'
 import styles from "./style";
 import { Card } from "react-native-elements";
 import { getItem, getLista } from "../../dataBase/SQLiteManager";
+import CriarLista from "../CriarLista";
 
 export default function HomeScreen({navigation}){
     const [listasCompras, setListasCompras] = useState([])
@@ -57,7 +58,7 @@ export default function HomeScreen({navigation}){
         <View style={styles.conteudoPrincipal}>
             
                 <Image source={require('../../../assets/img1.jpg')} style={styles.imagem} />
-                <TouchableOpacity style={styles.botaoCriarTarefa}>
+                <TouchableOpacity style={styles.botaoCriarTarefa} onPress={() => navigation.navigate('CriarLista')}>
                     <Text style={styles.textoBotao}>Criar nova lista</Text>
                 </TouchableOpacity>
                 {carregando ? (

@@ -7,6 +7,7 @@ import { initDB } from "../../dataBase/SQLiteManager";
 
 import HomeScreen from '../HomeScreen'
 import ItensLista from '../ItensLista'
+import CriarLista from "../CriarLista";
 
 
 export default function Routes() {
@@ -38,6 +39,12 @@ export default function Routes() {
           name="ItensLista"
           options={{ title: "Itens da lista" }}
           component={ItensLista}
+        />
+
+        <Stack.Screen
+          name="CriarLista"
+          options={{ title: "Lista de compras" }}
+          component={CriarLista}
         />
       </Stack.Navigator>
     </NavigationContainer>
